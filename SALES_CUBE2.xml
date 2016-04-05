@@ -1,0 +1,215 @@
+
+<!DOCTYPE Metadata [
+  <!ENTITY % BIND_VALUES PUBLIC "OLAP BIND VALUES" "OLAP METADATA">
+  %BIND_VALUES;
+  ]>
+<Metadata
+  Version="1.2"
+  MinimumDatabaseVersion="11.2.0.1">
+  <Cube
+    ETViewName="SALES_CUBE2_VIEW"
+    Name="SALES_CUBE2">
+    <Measure>
+      <BaseMeasure
+        SQLDataType="NUMBER"
+        ETMeasureColumnName="SALES_AMOUNT"
+        Name="SALES_AMOUNT">
+        <Description
+          Type="LongDescription"
+          Language="GERMAN"
+          Value="sales amount">
+        </Description>
+        <Description
+          Type="ShortDescription"
+          Language="GERMAN"
+          Value="sales amount">
+        </Description>
+        <Description
+          Type="Description"
+          Language="GERMAN"
+          Value="sales amount">
+        </Description>
+      </BaseMeasure>
+    </Measure>
+    <Measure>
+      <BaseMeasure
+        SQLDataType="NUMBER"
+        ETMeasureColumnName="TOTAL_PRODUCT_COST"
+        Name="TOTAL_PRODUCT_COST">
+        <Description
+          Type="LongDescription"
+          Language="GERMAN"
+          Value="total product cost">
+        </Description>
+        <Description
+          Type="ShortDescription"
+          Language="GERMAN"
+          Value="total product cost">
+        </Description>
+        <Description
+          Type="Description"
+          Language="GERMAN"
+          Value="total product cost">
+        </Description>
+      </BaseMeasure>
+    </Measure>
+    <Measure>
+      <DerivedMeasure
+        ETMeasureColumnName="PROFIT"
+        Name="PROFIT"
+        MeasureExpression="SALES_CUBE2.SALES_AMOUNT - SALES_CUBE2.TOTAL_PRODUCT_COST">
+        <Classification
+          Value="AwmDescriptionType=SUBTRACTION"/>
+        <Description
+          Type="AWMDescriptionType"
+          Language="GERMAN"
+          Value="SUBTRACTION">
+        </Description>
+        <Description
+          Type="LongDescription"
+          Language="GERMAN"
+          Value="profit">
+        </Description>
+        <Description
+          Type="ShortDescription"
+          Language="GERMAN"
+          Value="profit">
+        </Description>
+        <Description
+          Type="Description"
+          Language="GERMAN"
+          Value="profit">
+        </Description>
+      </DerivedMeasure>
+    </Measure>
+    <Measure>
+      <DerivedMeasure
+        ETMeasureColumnName="PROFIT_MEAN"
+        Name="PROFIT_MEAN"
+        MeasureExpression="SALES_CUBE2.PROFIT / DIM_TIME.TIME_SPAN">
+        <Classification
+          Value="AwmDescriptionType=FREE_FORM"/>
+        <Description
+          Type="AWMDescriptionType"
+          Language="GERMAN"
+          Value="FREE_FORM">
+        </Description>
+        <Description
+          Type="LongDescription"
+          Language="GERMAN"
+          Value="profit mean">
+        </Description>
+        <Description
+          Type="ShortDescription"
+          Language="GERMAN"
+          Value="profit mean">
+        </Description>
+        <Description
+          Type="Description"
+          Language="GERMAN"
+          Value="profit mean">
+        </Description>
+      </DerivedMeasure>
+    </Measure>
+    <CubeMap
+      Name="MAP1"
+      IsSolved="False"
+      Query="ADVWORKS.FACTINTERNETSALES">
+      <MeasureMap
+        Name="SALES_AMOUNT"
+        Measure="SALES_AMOUNT"
+        Expression="ADVWORKS.FACTINTERNETSALES.SALESAMOUNT">
+      </MeasureMap>
+      <MeasureMap
+        Name="TOTAL_PRODUCT_COST"
+        Measure="TOTAL_PRODUCT_COST"
+        Expression="ADVWORKS.FACTINTERNETSALES.TOTALPRODUCTCOST">
+      </MeasureMap>
+      <CubeDimensionalityMap
+        Name="DIM_TIME"
+        Dimensionality="DIM_TIME"
+        MappedDimension="DIM_TIME.TIME.MONTH"
+        Expression="ADVWORKS.FACTINTERNETSALES.TIME_MONTH">
+      </CubeDimensionalityMap>
+      <CubeDimensionalityMap
+        Name="DIM_CUSOTMER"
+        Dimensionality="DIM_CUSOTMER"
+        MappedDimension="DIM_CUSTOMER.PRIMARY.CUSTOMER"
+        Expression="ADVWORKS.FACTINTERNETSALES.CUSTOMERKEY">
+      </CubeDimensionalityMap>
+      <CubeDimensionalityMap
+        Name="DIM_PRODUCT"
+        Dimensionality="DIM_PRODUCT"
+        MappedDimension="DIM_PRODUCT.PRIMARY.PRODUCT"
+        Expression="ADVWORKS.FACTINTERNETSALES.PRODUCTKEY">
+      </CubeDimensionalityMap>
+    </CubeMap>
+    <Organization>
+      <AWCubeOrganization
+        MVOption="NONE"
+        SparseType="COMPRESSED"
+        MeasureStorage="SHARED"
+        NullStorage="MV_READY"
+        CubeStorageType="NUMBER"
+        PrecomputePercent="40"
+        PrecomputePercentTop="0"
+        PartitionLevel="DIM_TIME.TIME.QUARTER"
+        AW="&AW_NAME;">
+        <MVCreationOptions>
+        </MVCreationOptions>
+        <SparseDimension
+          Name="DIM_TIME"/>
+        <SparseDimension
+          Name="DIM_CUSOTMER"/>
+        <SparseDimension
+          Name="DIM_PRODUCT"/>
+        <DefaultBuild>
+          <![CDATA[BUILD SPEC LOAD_AND_AGGREGATE
+(
+  LOAD NO SYNCH, 
+  SOLVE
+)]]>
+        </DefaultBuild>
+      </AWCubeOrganization>
+    </Organization>
+    <Dimensionality
+      Name="DIM_TIME"
+      ETKeyColumnName="DIM_TIME"
+      Dimension="DIM_TIME">
+    </Dimensionality>
+    <Dimensionality
+      Name="DIM_CUSOTMER"
+      ETKeyColumnName="DIM_CUSOTMER"
+      Dimension="DIM_CUSTOMER">
+    </Dimensionality>
+    <Dimensionality
+      Name="DIM_PRODUCT"
+      ETKeyColumnName="DIM_PRODUCT"
+      Dimension="DIM_PRODUCT">
+    </Dimensionality>
+    <Description
+      Type="LongDescription"
+      Language="GERMAN"
+      Value="sales cube2">
+    </Description>
+    <Description
+      Type="ShortDescription"
+      Language="GERMAN"
+      Value="sales cube2">
+    </Description>
+    <Description
+      Type="Description"
+      Language="GERMAN"
+      Value="sales cube2">
+    </Description>
+    <ConsistentSolve>
+      <![CDATA[SOLVE 
+(
+  SUM
+    MAINTAIN COUNT
+     OVER ALL
+)]]>
+    </ConsistentSolve>
+  </Cube>
+</Metadata>
+<!--Generated by the Oracle Analytic Workspace Manager-->
